@@ -69,11 +69,13 @@ flutter_native_splash:
 
 
 flavorizr:
-  ide: "vscode"
+  ide: "idea"
   app:
     android:
       flavorDimensions: "flavor-type"
-    
+
+
+  
   flavors:
     dev:
       app:
