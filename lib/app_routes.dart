@@ -7,3 +7,4 @@ class AppRoutes {
   static const createApp = 'createApp';
   static const editApp = 'editApp';
 }
+
