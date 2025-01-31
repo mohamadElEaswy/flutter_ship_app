@@ -1,5 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ship_app/firebase_options_prod.dart' as prod;
+import 'package:flutter_ship_app/firebase_options_stg.dart' as stg;
+import 'package:flutter_ship_app/firebase_options_dev.dart' as dev;
 
 enum Flavor { dev, stg, prod }
 
@@ -26,5 +30,12 @@ Flavor getFlavor() {
     _ => throw UnsupportedError('Invalid flavor: $flavor'),
   };
 }
-
+Future<void> initializeFirebaseApp() async {
+  final firebaseOptions = switch (getFlavor()) {
+    Flavor.prod => prod.DefaultFirebaseOptions.currentPlatform,
+    Flavor.stg => stg.DefaultFirebaseOptions.currentPlatform,
+    Flavor.dev => dev.DefaultFirebaseOptions.currentPlatform,
+  };
+  await Firebase.initializeApp(options: firebaseOptions);
+}
 // ignore_for_file:no-equal-switch-expression-cases,avoid-nullable-interpolation

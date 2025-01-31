@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_ship_app/app_routes.dart';
+import 'package:flutter_ship_app/env/flavor.dart';
 import 'package:flutter_ship_app/src/app_startup.dart';
 import 'package:flutter_ship_app/src/domain/app.dart';
 import 'package:flutter_ship_app/src/domain/epic.dart';
@@ -13,12 +14,18 @@ import 'package:flutter_ship_app/src/presentation/apps_list_screen.dart';
 import 'package:flutter_ship_app/src/utils/app_theme_data.dart';
 import 'package:flutter_ship_app/src/utils/app_theme_mode.dart';
 
-Future<void>  runMainApp() async {
+Future<void> runMainApp() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
   // * Preload SharedPreferences before calling runApp, as the AppStartupWidget
   // * depends on it in order to load the themeMode
-  await container.read(sharedPreferencesProvider.future);
+  await Future.wait(
+    [
+      initializeFirebaseApp(),
+      container.read(sharedPreferencesProvider.future),
+    ],
+  );
+
   // run the app
   runApp(UncontrolledProviderScope(
     container: container,
@@ -91,3 +98,13 @@ class MainApp extends ConsumerWidget {
 }
 
 // ignore_for_file:avoid-undisposed-instances,avoid-nullable-interpolation
+
+
+/*
+
+flutterfire config --project=flutter-ship-dev-1 --out=lib/firebase_options_dev.dart --ios-bundle-id=com.codewithandrea.flutterShipApp.dev --ios-out=ios/flavors/dev/GoogleService-Info.plist --android-package-name=com.codewithandrea.flutter_ship_app.dev --android-out=android/app/src/dev/google-services.json
+flutterfire config --project=flutter-ship-stg-1 --out=lib/firebase_options_stg.dart --ios-bundle-id=com.codewithandrea.flutterShipApp.stg --ios-out=ios/flavors/stg/GoogleService-Info.plist --android-package-name=com.codewithandrea.flutter_ship_app.stg --android-out=android/app/src/stg/google-services.json
+flutterfire config --project=flutter-ship-prod-1 --out=lib/firebase_options_prod.dart --ios-bundle-id=com.codewithandrea.flutterShipApp.prod --ios-out=ios/flavors/prod/GoogleService-Info.plist --android-package-name=com.codewithandrea.flutter_ship_app.prod --android-out=android/app/src/prod/google-services.json
+
+
+ */
